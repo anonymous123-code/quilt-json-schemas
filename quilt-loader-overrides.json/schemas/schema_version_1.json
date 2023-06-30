@@ -1,0 +1,123 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "definitions": {
+        "override_target_def": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "path": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["path"],
+                    "not": {
+                        "required": ["id", "pattern"]
+                    }
+                },
+                {
+                    "properties": {
+                        "path": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["id"],
+                    "not": {
+                        "required": ["path", "pattern"]
+                    }
+                },
+                {
+                    "properties": {
+                        "path": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["pattern"],
+                    "not": {
+                        "required": ["id", "path"]
+                    }
+                }
+            ]
+        },
+        "dependency_override": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "properties": {
+                        "add": {
+                            "$ref": "https://raw.githubusercontent.com/QuiltMC/quilt-json-schemas/main/quilt.mod.json/schemas/schema_version_1.json#/$defs/dependency_object"
+                        }
+                    },
+                    "required": ["add"],
+                    "not": {
+                        "required": ["remove", "replace", "with"]
+                    }
+                },
+                {
+                    "properties": {
+                        "remove": {
+                            "$ref": "https://raw.githubusercontent.com/QuiltMC/quilt-json-schemas/main/quilt.mod.json/schemas/schema_version_1.json#/$defs/dependency_object"
+                        }
+                    },
+                    "required": ["remove"],
+                    "not": {
+                        "required": ["add", "replace", "with"]
+                    }
+                },
+                {
+                    "properties": {
+                        "replace": {
+                            "$ref": "https://raw.githubusercontent.com/QuiltMC/quilt-json-schemas/main/quilt.mod.json/schemas/schema_version_1.json#/$defs/dependency_object"
+                        },
+                        "with": {
+                            "$ref": "https://raw.githubusercontent.com/QuiltMC/quilt-json-schemas/main/quilt.mod.json/schemas/schema_version_1.json#/$defs/dependency_object"
+                        }
+                    },
+                    "required": ["replace", "with"],
+                    "not": {
+                        "required": ["add", "remove"]
+                    }
+                }
+            ]
+        }
+    },
+    "properties": {
+        "overrides": {
+            "type":"array",
+            "items": {
+                "type": "object",
+                "anyOf": [{"$ref": "#/definitions/override_target_def"}],
+                "properties": {
+                    "version": {
+                        "type": "string"
+                    },
+                    "breaks": {
+                        "oneOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/dependency_override"
+                                }
+                            },
+                            {
+                                "$ref": "#/definitions/dependency_override"
+                            }
+                        ]
+                    },
+                    "depends": {
+                        "oneOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/dependency_override"
+                                }
+                            },
+                            {
+                                "$ref": "#/definitions/dependency_override"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
